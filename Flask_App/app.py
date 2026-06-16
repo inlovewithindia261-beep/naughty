@@ -13,7 +13,7 @@ import sys
 app = Flask(__name__)
 
 # ─── Load Model Artifacts ─────────────────────────────────────────
-BASE      = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE      = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MODEL_DIR = os.path.join(BASE, 'Model')
 
 model      = joblib.load(f'{MODEL_DIR}/best_model.pkl')
