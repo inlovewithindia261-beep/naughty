@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Employee Attrition Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar">
+  <div class="nav-brand">👥 Attrition Predictor</div>
+  <div class="nav-info">AIML Internship 2026 | MNNIT Allahabad</div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <h1>Employee Attrition Prediction System</h1>
+  <p>Capstone Project 4 &nbsp;|&nbsp; IIHMF, MNNIT Allahabad, Prayagraj</p>
+  <p>Fill in the employee details below to predict attrition risk</p>
+</div>
+
+{% if error %}
+<div class="error-box">⚠️ {{ error }}</div>
+{% endif %}
+
+<!-- ── FORM ── -->
+<div class="container">
+  <form action="/predict" method="POST">
+
+    <!-- SECTION 1 -->
+    <div class="card">
+      <div class="card-header">👤 Personal Information</div>
+      <div class="grid-3">
+
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" name="age" min="18" max="60" value="35" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Gender</label>
+          <select name="gender">
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Marital Status</label>
+          <select name="marital_status">
+            <option>Single</option>
+            <option>Married</option>
+            <option>Divorced</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Education Level</label>
+          <select name="education">
+            <option value="1">1 – Below College</option>
+            <option value="2">2 – College</option>
+            <option value="3" selected>3 – Bachelor</option>
+            <option value="4">4 – Master</option>
+            <option value="5">5 – Doctor</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Education Field</label>
+          <select name="education_field">
+            <option>Life Sciences</option>
+            <option>Medical</option>
+            <option>Marketing</option>
+            <option>Technical Degree</option>
+            <option>Human Resources</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Distance From Home (km)</label>
+          <input type="number" name="distance_from_home" min="1" max="29" value="10" required/>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="card">
+      <div class="card-header">🏢 Job Information</div>
+      <div class="grid-3">
+
+        <div class="form-group">
+          <label>Department</label>
+          <select name="department">
+            <option>Sales</option>
+            <option>Research &amp; Development</option>
+            <option>Human Resources</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Job Role</label>
+          <select name="job_role">
+            <option>Sales Executive</option>
+            <option>Research Scientist</option>
+            <option>Laboratory Technician</option>
+            <option>Manager</option>
+            <option>Sales Representative</option>
+            <option>Research Director</option>
+            <option>Human Resources</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Job Level (1–5)</label>
+          <select name="job_level">
+            <option value="1">1 – Entry</option>
+            <option value="2" selected>2 – Junior</option>
+            <option value="3">3 – Mid</option>
+            <option value="4">4 – Senior</option>
+            <option value="5">5 – Director</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Job Involvement (1–4)</label>
+          <select name="job_involvement">
+            <option value="1">1 – Low</option>
+            <option value="2">2 – Medium</option>
+            <option value="3" selected>3 – High</option>
+            <option value="4">4 – Very High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>OverTime</label>
+          <select name="overtime">
+            <option>No</option>
+            <option>Yes</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Business Travel</label>
+          <select name="business_travel">
+            <option>Non-Travel</option>
+            <option selected>Travel_Rarely</option>
+            <option>Travel_Frequently</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="card">
+      <div class="card-header">💰 Compensation</div>
+      <div class="grid-3">
+
+        <div class="form-group">
+          <label>Monthly Income ($)</label>
+          <input type="number" name="monthly_income" min="1009" max="20000" value="5000" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Daily Rate ($)</label>
+          <input type="number" name="daily_rate" min="100" max="1500" value="800"/>
+        </div>
+
+        <div class="form-group">
+          <label>Percent Salary Hike (%)</label>
+          <input type="number" name="percent_salary_hike" min="11" max="25" value="15" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Stock Option Level</label>
+          <select name="stock_option_level">
+            <option value="0">0 – None</option>
+            <option value="1">1 – Low</option>
+            <option value="2">2 – Medium</option>
+            <option value="3">3 – High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Performance Rating</label>
+          <select name="performance_rating">
+            <option value="3" selected>3 – Excellent</option>
+            <option value="4">4 – Outstanding</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Training Times Last Year</label>
+          <input type="number" name="training_times" min="0" max="6" value="3" required/>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="card">
+      <div class="card-header">📊 Satisfaction Scores</div>
+      <div class="grid-4">
+
+        <div class="form-group">
+          <label>Job Satisfaction (1–4)</label>
+          <select name="job_satisfaction">
+            <option value="1">1 – Low</option>
+            <option value="2">2 – Medium</option>
+            <option value="3" selected>3 – High</option>
+            <option value="4">4 – Very High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Environment Satisfaction (1–4)</label>
+          <select name="env_satisfaction">
+            <option value="1">1 – Low</option>
+            <option value="2">2 – Medium</option>
+            <option value="3" selected>3 – High</option>
+            <option value="4">4 – Very High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Relationship Satisfaction (1–4)</label>
+          <select name="relationship_sat">
+            <option value="1">1 – Low</option>
+            <option value="2">2 – Medium</option>
+            <option value="3" selected>3 – High</option>
+            <option value="4">4 – Very High</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Work-Life Balance (1–4)</label>
+          <select name="work_life_balance">
+            <option value="1">1 – Bad</option>
+            <option value="2">2 – Good</option>
+            <option value="3" selected>3 – Better</option>
+            <option value="4">4 – Best</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="card">
+      <div class="card-header">📅 Experience & Tenure</div>
+      <div class="grid-3">
+
+        <div class="form-group">
+          <label>Total Working Years</label>
+          <input type="number" name="total_working_years" min="0" max="40" value="10" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Years at Company</label>
+          <input type="number" name="years_at_company" min="0" max="40" value="5" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Years in Current Role</label>
+          <input type="number" name="years_in_role" min="0" max="18" value="3" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Years with Current Manager</label>
+          <input type="number" name="years_with_manager" min="0" max="17" value="3" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Years Since Last Promotion</label>
+          <input type="number" name="years_since_promo" min="0" max="15" value="2" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Num Companies Worked</label>
+          <input type="number" name="num_companies_worked" min="0" max="9" value="2" required/>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-wrap">
+      <button type="submit" class="btn-predict">🔍 Predict Attrition Risk</button>
+    </div>
+
+  </form>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  Employee Attrition Prediction System &nbsp;|&nbsp; AIML Summer Internship 2026 &nbsp;|&nbsp; IIHMF, MNNIT Allahabad
+</footer>
+
+</body>
+</html>
