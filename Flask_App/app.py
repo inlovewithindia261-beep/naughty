@@ -21,11 +21,12 @@ logger = logging.getLogger(__name__)
 try:
     # Get the correct path to the Model directory
     CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-    BASE_DIR = os.path.dirname(os.path.dirname(CURRENT_DIR))
-    MODEL_DIR = os.path.join(BASE_DIR, 'Model')
+    # If deployment root is Flask_App, Model is at ../Model
+    MODEL_DIR = os.path.join(CURRENT_DIR, '..', 'Model')
+    # Normalize the path to resolve .. references
+    MODEL_DIR = os.path.normpath(MODEL_DIR)
     
     logger.info(f"Current directory: {CURRENT_DIR}")
-    logger.info(f"Base directory: {BASE_DIR}")
     logger.info(f"Model directory: {MODEL_DIR}")
     logger.info(f"Model directory exists: {os.path.exists(MODEL_DIR)}")
     
