@@ -25,33 +25,33 @@ try:
     MODEL_DIR = os.path.abspath(os.path.join(CURRENT_DIR, '..', 'Model'))
     # Normalize the path to resolve .. references
     MODEL_DIR = os.path.normpath(MODEL_DIR)
-    print("CURRENT_DIR=",CURRENT_DIR)
+    print("CURRENT_DIR=", CURRENT_DIR)
     print("MODEL_DIR=", MODEL_DIR)
     logger.info(f"Current directory: {CURRENT_DIR}")
     logger.info(f"Model directory: {MODEL_DIR}")
     logger.info(f"Model directory exists: {os.path.exists(MODEL_DIR)}")
-    
+
     # Load model files with error handling
     model_path = os.path.join(MODEL_DIR, 'best_model.pkl')
     scaler_path = os.path.join(MODEL_DIR, 'scaler.pkl')
     features_path = os.path.join(MODEL_DIR, 'feature_names.pkl')
     le_dict_path = os.path.join(MODEL_DIR, 'label_encoders.pkl')
     feat_info_path = os.path.join(MODEL_DIR, 'feature_info.pkl')
-    
+
     logger.info(f"Model file exists: {os.path.exists(model_path)}")
     logger.info(f"Scaler file exists: {os.path.exists(scaler_path)}")
     logger.info(f"Features file exists: {os.path.exists(features_path)}")
     logger.info(f"Label encoders file exists: {os.path.exists(le_dict_path)}")
     logger.info(f"Feature info file exists: {os.path.exists(feat_info_path)}")
-    
+
     model = joblib.load(model_path)
     scaler = joblib.load(scaler_path)
     features = joblib.load(features_path)
     le_dict = joblib.load(le_dict_path)
     feat_info = joblib.load(feat_info_path)
-    
+
     logger.info("✓ All model artifacts loaded successfully")
-    
+
 except Exception as e:
     logger.error(f"✗ Error loading model artifacts: {str(e)}")
     model = None
@@ -148,7 +148,7 @@ def predict():
         # Check if model is loaded
         if not all([model, scaler, features, le_dict, feat_info]):
             return render_template('index.html', error="Model not loaded. Please try again later.")
-        
+
         d = request.form
 
         # Numerical inputs with default values
@@ -232,12 +232,12 @@ def predict():
 
         import pandas as pd
         input_df = pd.DataFrame([input_dict])
-        
+
         # Ensure all required features are present
         for col in features:
             if col not in input_df.columns:
                 input_df[col] = 0
-        
+
         input_df = input_df[features]
         input_scaled = scaler.transform(input_df)
 
@@ -277,11 +277,42 @@ def predict():
         logger.error(f"Error in prediction: {str(e)}")
         return render_template('index.html', error=f"Prediction error: {str(e)}")
 
+
+# ─── Health Check (Debug) ──────────────────────────────────────────
 @app.route('/health')
 def health():
-    """Health check endpoint for deployment"""
-    model_status = "loaded" if model else "not_loaded"
-    return {'status': 'healthy', 'model': model_status}, 200
+    """Detailed health check endpoint for debugging deployment"""
+    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    MODEL_DIR = os.path.normpath(os.path.join(CURRENT_DIR, '..', 'Model'))
+
+    # List files in Model dir if it exists
+    if os.path.exists(MODEL_DIR):
+        try:
+            model_files = os.listdir(MODEL_DIR)
+        except Exception as e:
+            model_files = f"Error listing: {str(e)}"
+    else:
+        model_files = "DIRECTORY NOT FOUND"
+
+    # List files in repo root (one level up from Flask_App)
+    repo_root = os.path.normpath(os.path.join(CURRENT_DIR, '..'))
+    try:
+        root_contents = os.listdir(repo_root)
+    except Exception as e:
+        root_contents = f"Error: {str(e)}"
+
+    return {
+        'model_loaded': model is not None,
+        'scaler_loaded': scaler is not None,
+        'features_loaded': features is not None,
+        'current_dir': CURRENT_DIR,
+        'model_dir': MODEL_DIR,
+        'model_dir_exists': os.path.exists(MODEL_DIR),
+        'model_files_found': model_files,
+        'repo_root': repo_root,
+        'repo_root_contents': root_contents,
+    }, 200
+
 
 @app.errorhandler(404)
 def not_found(error):
