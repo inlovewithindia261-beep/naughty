@@ -31,10 +31,12 @@ import os
 warnings.filterwarnings('ignore')
 
 # ─── Paths ───────────────────────────────────────────────────────────────────
-BASE  = '/home/claude/EmployeeAttritionPrediction'
-DATA  = f'{BASE}/Dataset/WA_Fn-UseC_-HR-Employee-Attrition.csv'   # Real Kaggle dataset
-MODEL = f'{BASE}/Model'
-PLOTS = f'{BASE}/Documentation/plots'
+# Resolve paths relative to this script so the pipeline works on any machine.
+# Override BASE by setting the ATTRITION_BASE environment variable.
+BASE  = os.environ.get('ATTRITION_BASE', os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+DATA  = os.path.join(BASE, 'Dataset', 'WA_Fn-UseC_-HR-Employee-Attrition.csv')   # Real Kaggle dataset
+MODEL = os.path.join(BASE, 'Model')
+PLOTS = os.path.join(BASE, 'Documentation', 'plots')
 os.makedirs(MODEL, exist_ok=True)
 os.makedirs(PLOTS, exist_ok=True)
 
@@ -119,7 +121,7 @@ for ax, col in zip(axes.flatten(), univ_cols):
     ax.set_xlabel(col)
     ax.set_ylabel('Count')
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/01_univariate_histograms.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '01_univariate_histograms.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 01_univariate_histograms.png")
 
@@ -134,7 +136,7 @@ for bar in bars:
 ax.set_title('Attrition Distribution', fontsize=13, fontweight='bold')
 ax.set_ylabel('Count')
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/02_attrition_distribution.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '02_attrition_distribution.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 02_attrition_distribution.png")
 
@@ -152,7 +154,7 @@ for ax, col in zip(axes.flatten(), biv_cols):
     ax.set_ylabel('Density')
     ax.legend(title='Attrition')
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/03_bivariate_analysis.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '03_bivariate_analysis.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 03_bivariate_analysis.png")
 
@@ -169,7 +171,7 @@ for ax, col in zip(axes, ['MonthlyIncome', 'Age', 'DistanceFromHome']):
     ax.set_xlabel('Attrition')
     ax.set_ylabel(col)
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/04_boxplots.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '04_boxplots.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 04_boxplots.png")
 
@@ -182,7 +184,7 @@ sns.heatmap(corr, mask=mask, annot=False, cmap='RdBu_r', center=0,
             linewidths=0.3, ax=ax, vmin=-1, vmax=1)
 ax.set_title('Correlation Heatmap', fontsize=13, fontweight='bold')
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/05_correlation_heatmap.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '05_correlation_heatmap.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 05_correlation_heatmap.png")
 
@@ -197,7 +199,7 @@ for ax, col in zip(axes, ['Department', 'OverTime', 'MaritalStatus']):
     for i, v in enumerate(rate.values):
         ax.text(v * 100 + 0.5, i, f'{v:.1%}', va='center', fontsize=9)
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/06_categorical_attrition.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '06_categorical_attrition.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 06_categorical_attrition.png")
 
@@ -239,7 +241,7 @@ importances.head(20).sort_values().plot(kind='barh', ax=ax, color='#3498DB', edg
 ax.set_title('Top 20 Feature Importances (Random Forest)', fontsize=13, fontweight='bold')
 ax.set_xlabel('Importance Score')
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/07_feature_importance.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '07_feature_importance.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 07_feature_importance.png")
 
@@ -311,7 +313,7 @@ metrics_df = pd.DataFrame({
 }).T.round(4)
 print("\n  Model Comparison:\n")
 print(metrics_df.to_string())
-metrics_df.to_csv(f'{BASE}/Documentation/model_metrics.csv')
+metrics_df.to_csv(os.path.join(BASE, 'Documentation', 'model_metrics.csv'))
 
 # Confusion matrices
 fig, axes = plt.subplots(1, 3, figsize=(15, 4))
@@ -324,7 +326,7 @@ for ax, (name, r) in zip(axes, results.items()):
     ax.set_xlabel('Predicted')
     ax.set_ylabel('Actual')
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/08_confusion_matrices.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '08_confusion_matrices.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 08_confusion_matrices.png")
 
@@ -340,7 +342,7 @@ ax.set_ylabel('True Positive Rate', fontsize=11)
 ax.set_title('ROC Curves – All Models', fontsize=13, fontweight='bold')
 ax.legend(loc='lower right')
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/09_roc_curves.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '09_roc_curves.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 09_roc_curves.png")
 
@@ -361,7 +363,7 @@ ax.set_title('Model Performance Comparison', fontsize=13, fontweight='bold')
 ax.set_ylabel('Score')
 ax.legend()
 plt.tight_layout()
-plt.savefig(f'{PLOTS}/10_model_comparison.png', bbox_inches='tight')
+plt.savefig(os.path.join(PLOTS, '10_model_comparison.png'), bbox_inches='tight')
 plt.close()
 print("  Saved: 10_model_comparison.png")
 
@@ -391,17 +393,17 @@ print(classification_report(y_test, results[best_name]['y_pred'],
 # ════════════════════════════════════════════════════════════════
 print("\n[Phase 8] Saving Model Artifacts...")
 
-joblib.dump(best_model,   f'{MODEL}/best_model.pkl')
-joblib.dump(scaler,       f'{MODEL}/scaler.pkl')
-joblib.dump(top_features, f'{MODEL}/feature_names.pkl')
-joblib.dump(le_dict,      f'{MODEL}/label_encoders.pkl')
+joblib.dump(best_model,   os.path.join(MODEL, 'best_model.pkl'))
+joblib.dump(scaler,       os.path.join(MODEL, 'scaler.pkl'))
+joblib.dump(top_features, os.path.join(MODEL, 'feature_names.pkl'))
+joblib.dump(le_dict,      os.path.join(MODEL, 'label_encoders.pkl'))
 
 feature_info = {
     'cat_cols':        cat_cols,
     'top_features':    top_features,
     'best_model_name': best_name,
 }
-joblib.dump(feature_info, f'{MODEL}/feature_info.pkl')
+joblib.dump(feature_info, os.path.join(MODEL, 'feature_info.pkl'))
 
 print(f"  Saved: best_model.pkl ({best_name})")
 print(f"  Saved: scaler.pkl, feature_names.pkl, label_encoders.pkl, feature_info.pkl")

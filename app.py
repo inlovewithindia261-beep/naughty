@@ -1,5 +1,6 @@
 import sys
 import os
+import pandas as pd  # noqa: F401 – re-exported for clarity; used in Flask_App/app.py
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'Flask_App'))
 from app import app
 
