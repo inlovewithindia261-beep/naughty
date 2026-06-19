@@ -10,7 +10,7 @@
 
 <!-- ── NAVBAR ── -->
 <nav class="navbar">
-  <div class="nav-brand">👥 Attrition Predictor</div>
+  <div class="nav-brand"><span role="img" aria-label="People">👥</span> Attrition Predictor</div>
   <div class="nav-info">AIML Internship 2026 | MNNIT Allahabad</div>
 </nav>
 
@@ -24,8 +24,8 @@
 
   <!-- ── MAIN RESULT CARD ── -->
   {% if pred == 1 %}
-  <div class="result-card result-leave">
-    <div class="result-icon">⚠️</div>
+  <div class="result-card result-leave" role="alert">
+    <div class="result-icon" aria-hidden="true">⚠️</div>
     <div class="result-title">HIGH ATTRITION RISK</div>
     <div class="result-subtitle">This employee is likely to leave the organization</div>
     <div class="prob-display">
@@ -37,8 +37,8 @@
     </div>
   </div>
   {% else %}
-  <div class="result-card result-stay">
-    <div class="result-icon">✅</div>
+  <div class="result-card result-stay" role="status">
+    <div class="result-icon" aria-hidden="true">✅</div>
     <div class="result-title">LOW ATTRITION RISK</div>
     <div class="result-subtitle">This employee is likely to stay in the organization</div>
     <div class="prob-display">
@@ -53,9 +53,9 @@
 
   <!-- ── PROBABILITY BAR ── -->
   <div class="card">
-    <div class="card-header">📊 Attrition Probability Meter</div>
+    <div class="card-header"><span role="img" aria-label="Bar chart">📊</span> Attrition Probability Meter</div>
     <div class="prob-bar-wrap">
-      <div class="prob-bar-track">
+      <div class="prob-bar-track" role="progressbar" aria-valuenow="{{ prob }}" aria-valuemin="0" aria-valuemax="100" aria-label="Attrition probability {{ prob }}%">
         <div class="prob-bar-fill"
              style="width: {{ prob }}%;
                     background: {% if prob >= 65 %}#E74C3C{% elif prob >= 40 %}#F39C12{% else %}#27AE60{% endif %};">
@@ -81,7 +81,7 @@
 
     <!-- LEFT: Risk Factors -->
     <div class="card">
-      <div class="card-header">🧠 Key Risk Factors</div>
+      <div class="card-header"><span role="img" aria-label="Brain">🧠</span> Key Risk Factors</div>
       <div class="risk-list">
         {% for factor, level, color in risk_factors %}
         <div class="risk-item" style="border-left: 4px solid {{ color }};">
@@ -94,7 +94,7 @@
 
     <!-- RIGHT: Employee Summary -->
     <div class="card">
-      <div class="card-header">📋 Employee Summary</div>
+      <div class="card-header"><span role="img" aria-label="Clipboard">📋</span> Employee Summary</div>
       <table class="summary-table">
         <tr><td>Age</td><td><b>{{ employee.age }}</b></td></tr>
         <tr><td>Department</td><td><b>{{ employee.department }}</b></td></tr>
@@ -116,12 +116,12 @@
   <!-- ── RECOMMENDATIONS ── -->
   <div class="card">
     {% if pred == 1 %}
-    <div class="card-header" style="background:#E74C3C;">💡 HR Retention Recommendations</div>
+    <div class="card-header" style="background:#E74C3C;"><span role="img" aria-label="Light bulb">💡</span> HR Retention Recommendations</div>
     <div class="rec-intro leave">
       Immediate action is recommended for this employee to prevent attrition:
     </div>
     {% else %}
-    <div class="card-header" style="background:#27AE60;">💡 HR Engagement Recommendations</div>
+    <div class="card-header" style="background:#27AE60;"><span role="img" aria-label="Light bulb">💡</span> HR Engagement Recommendations</div>
     <div class="rec-intro stay">
       Employee appears engaged. Continue the following to maintain retention:
     </div>
@@ -135,7 +135,7 @@
 
   <!-- ── MODEL PERFORMANCE ── -->
   <div class="card">
-    <div class="card-header">📈 Model Performance Metrics</div>
+    <div class="card-header"><span role="img" aria-label="Chart increasing">📈</span> Model Performance Metrics</div>
     <div class="metrics-grid">
       <div class="metric-box">
         <div class="metric-val">65.0%</div>
@@ -166,7 +166,7 @@
 
   <!-- ── BACK BUTTON ── -->
   <div class="submit-wrap">
-    <a href="/" class="btn-predict" style="text-decoration:none;">← Predict Another Employee</a>
+    <a href="/" class="btn-predict" style="text-decoration:none;" aria-label="Go back and predict another employee">← Predict Another Employee</a>
   </div>
 
 </div>
